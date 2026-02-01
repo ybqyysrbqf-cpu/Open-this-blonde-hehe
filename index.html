@@ -1,179 +1,153 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Just a Question</title>
-
 <style>
   body {
     margin: 0;
-    min-height: 100vh;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    background: linear-gradient(135deg, #eaf2ff, #f7f9fc);
-    color: #1f2937;
+    background: linear-gradient(135deg, #e0f0ff, #f5f7fa);
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
+    min-height: 100vh;
   }
-
   .card {
     background: #ffffff;
     border-radius: 20px;
     padding: 24px;
     width: 90%;
-    max-width: 420px;
-    box-shadow: 0 20px 40px rgba(30, 64, 175, 0.15);
+    max-width: 400px;
+    box-shadow: 0 20px 40px rgba(0, 70, 150, 0.2);
     text-align: center;
   }
-
   h1 {
+    color: #1e3a8a;
     margin-top: 0;
     font-size: 24px;
-    color: #1e3a8a;
   }
-
   p {
     font-size: 16px;
-    min-height: 48px;
+    min-height: 60px;
     white-space: pre-line;
+    color: #334155;
   }
-
   button {
     border: none;
     border-radius: 14px;
     padding: 12px 20px;
     font-size: 18px;
-    cursor: pointer;
     margin: 8px;
+    cursor: pointer;
     transition: all 0.25s ease;
   }
-
-  #startBtn {
-    background: linear-gradient(135deg, #2563eb, #60a5fa);
-    color: white;
-  }
-
-  #yesBtn {
-    background: linear-gradient(135deg, #3cb371, #86efac);
-    color: white;
-  }
-
-  #noBtn {
-    background: linear-gradient(135deg, #cbd5e1, #e5e7eb);
-    color: #1f2937;
-  }
-
-  .cats {
-    margin-top: 16px;
-  }
-
-  .cats img {
-    width: 110px;
-    border-radius: 14px;
-    margin: 6px;
-  }
-
-  .hidden {
-    display: none;
-  }
+  #startBtn { background: linear-gradient(135deg,#2563eb,#60a5fa); color: white;}
+  #yesBtn { background: linear-gradient(135deg,#3cb371,#86efac); color: white;}
+  #noBtn { background: linear-gradient(135deg,#cbd5e1,#e5e7eb); color: #1f2937;}
+  .cats { margin-top: 16px; display:flex; flex-wrap:wrap; justify-content:center;}
+  .cats img { width: 110px; border-radius: 14px; margin: 6px; transition: transform 0.3s ease;}
 </style>
 </head>
-
 <body>
 
 <div class="card">
-
   <h1 id="title">Tap start 🙂</h1>
   <button id="startBtn">Start</button>
 
   <div id="main" class="hidden">
     <h1>Can I be your boyfriend?</h1>
-
     <button id="yesBtn">Yes</button>
     <button id="noBtn">No</button>
-
     <p id="msg"></p>
     <div class="cats" id="cats"></div>
   </div>
-
 </div>
 
 <script>
-  let noCount = 0;
-  const audio = new Audio();
-  audio.preload = "auto";
+let noCount = 0;
+const audio = new Audio();
+audio.preload = "auto";
 
-  const messages = [
-    "lemme ask you again 🥺",
-    "are you sure Akumla? if you say yes i’ll make cute edits of you 🥺",
-    "are you sure no?",
-    "i long for you Akumla 😭",
-    "yk how much i like you Akumla? think again",
-    "no i wont let you go 😒",
-    "say yes 😋",
-    "i dont care say yes noww 😗",
-    "say yes already blonde 👱🏻‍♀️😒",
-    "im not tired! are you? lets start over hehe 😈"
-  ];
+const messages = [
+  "lemme ask you again 🥺",
+  "are you sure Akumla? if you say yes i’ll make cute edits of you 🥺",
+  "are you sure no?",
+  "i long for you Akumla 😭",
+  "yk how much i like you Akumla? think again",
+  "no i wont let you go 😒",
+  "say yes 😋",
+  "i dont care say yes noww 😗",
+  "say yes already blonde 👱🏻‍♀️😒",
+  "im not tired! are you? lets start over hehe 😈"
+];
 
-  function play(src, start, loop=false) {
-    audio.pause();
-    audio.src = src;
-    audio.loop = loop;
-    audio.currentTime = start;
-    audio.play().catch(()=>{});
-  }
+// Preload cat URLs
+const catURLs = [
+  "https://cataas.com/cat?random=1",
+  "https://cataas.com/cat?random=2",
+  "https://cataas.com/cat?random=3",
+  "https://cataas.com/cat?random=4",
+  "https://cataas.com/cat?random=5"
+];
 
-  function addCat(limit = 1) {
-    const cats = document.getElementById("cats");
-    if (cats.children.length >= limit) return;
+function playSong(src, start, loop=false){
+  audio.pause();
+  audio.src = src;
+  audio.loop = loop;
+  audio.currentTime = start;
+  audio.play().catch(()=>{});
+}
 
-    const img = document.createElement("img");
-    img.src = "https://cataas.com/cat?random=" + Math.random();
-    cats.appendChild(img);
-  }
+function addCat(limit=1){
+  const catsDiv = document.getElementById("cats");
+  if(catsDiv.children.length >= limit) return;
+  const img = document.createElement("img");
+  img.src = catURLs[Math.floor(Math.random()*catURLs.length)];
+  catsDiv.appendChild(img);
+}
 
-  startBtn.onclick = () => {
-    title.textContent = "";
-    startBtn.classList.add("hidden");
-    main.classList.remove("hidden");
+const startBtn = document.getElementById("startBtn");
+const main = document.getElementById("main");
+const msg = document.getElementById("msg");
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+const title = document.getElementById("title");
+const catsDiv = document.getElementById("cats");
 
-    play("startSong.mp3", 1, true); // 00:01
-    addCat(1);
-  };
+// Start
+startBtn.onclick = ()=>{
+  startBtn.classList.add("hidden");
+  title.textContent = "";
+  main.classList.remove("hidden");
+  playSong("startSong.mp3",1,true); // 00:01 loop
+  addCat(1);
+};
 
-  noBtn.onclick = () => {
-    noCount++;
+// No Button
+noBtn.onclick = ()=>{
+  noCount++;
+  msg.textContent = messages[Math.min(noCount-1, messages.length-1)];
+  yesBtn.style.transform = `scale(${1 + noCount*0.15})`;
 
-    msg.textContent = messages[Math.min(noCount - 1, messages.length - 1)];
+  if(noCount===1) playSong("noSong1.mp3",1);
+  if(noCount===2) playSong("noSong2.mp3",32);
+  if(noCount>=3) playSong("noSong3.mp3",260); // 04:20
 
-    yesBtn.style.transform = `scale(${1 + noCount * 0.15})`;
+  addCat(2);
 
-    if (noCount === 1) play("noSong1.mp3", 1);        // 00:01
-    if (noCount === 2) play("noSong1.mp3", 32);       // 00:32
-    if (noCount >= 3) play("noSong1.mp3", 260);       // 04:20
+  if(noCount>=10) noCount=0;
+};
 
-    addCat(2);
-
-    if (noCount === 10) {
-      noCount = 0; // start over, same song continues
-    }
-  };
-
-  yesBtn.onclick = () => {
-    play("yesSong.mp3", 40); // 00:40
-
-    msg.textContent =
-      "I can’t stop thinking about you 💙\n" +
-      "I would never cheat.\n" +
-      "I’ll only have eyes on you.";
-
-    cats.innerHTML = "";
-    addCat(2);
-
-    alert("Send this to me: OK YES IDIOT");
-  };
+// Yes Button
+yesBtn.onclick = ()=>{
+  playSong("yesSong.mp3",40);
+  msg.textContent = "I can’t stop thinking about you 💙\nI would never cheat.\nI’ll only have eyes on you.";
+  catsDiv.innerHTML="";
+  addCat(2);
+  alert("Send this to me: OK YES IDIOT");
+};
 </script>
 
 </body>
