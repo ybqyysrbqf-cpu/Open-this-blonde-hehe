@@ -10,12 +10,10 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   background: linear-gradient(135deg,#e0f0ff,#f5f7fa);
   display:flex; justify-content:center; align-items:center; min-height:100vh;
-  overflow-x: hidden;
 }
 .card {
   background:#fff; border-radius:20px; padding:24px; width:90%; max-width:420px;
   box-shadow:0 20px 40px rgba(0,70,150,0.2); text-align:center;
-  transition: all 0.3s ease;
 }
 h1 { color:#1e3a8a; margin-top:0; font-size:24px; }
 p { font-size:16px; min-height:60px; white-space:pre-line; color:#334155; }
@@ -23,19 +21,11 @@ button {
   border:none; border-radius:14px; padding:12px 20px; font-size:18px; margin:8px;
   cursor:pointer; transition: all 0.25s ease;
 }
-button:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
 #startBtn { background: linear-gradient(135deg,#2563eb,#60a5fa); color:white; }
 #yesBtn { background: linear-gradient(135deg,#3cb371,#86efac); color:white; }
 #noBtn { background: linear-gradient(135deg,#cbd5e1,#e5e7eb); color:#1f2937; }
 .cats { margin-top:16px; display:flex; flex-wrap:wrap; justify-content:center; }
-.cats img {
-  width:110px; border-radius:14px; margin:6px;
-  opacity:0; transform: scale(0.7);
-  animation: fadeInScale 0.6s forwards;
-}
-@keyframes fadeInScale {
-  to { opacity:1; transform: scale(1);}
-}
+.cats img { width:110px; border-radius:14px; margin:6px; transition:transform 0.3s ease; }
 .hidden { display:none; }
 </style>
 </head>
@@ -58,8 +48,6 @@ button:hover { transform: translateY(-3px); box-shadow: 0 4px 12px rgba(0,0,0,0.
 let noCount = 0;
 const audio = new Audio();
 audio.preload = "auto";
-audio.volume = 0;
-let fadeInterval;
 
 const messages = [
   "lemme ask you again 🥺",
@@ -82,36 +70,12 @@ const catURLs = [
   "https://cataas.com/cat?random=5"
 ];
 
-function fadeInAudio(targetVolume=1, step=0.05){
-  clearInterval(fadeInterval);
-  fadeInterval = setInterval(()=>{
-    if(audio.volume < targetVolume){
-      audio.volume = Math.min(audio.volume + step, targetVolume);
-    } else clearInterval(fadeInterval);
-  },50);
-}
-
-function fadeOutAudio(step=0.05){
-  clearInterval(fadeInterval);
-  fadeInterval = setInterval(()=>{
-    if(audio.volume > 0){
-      audio.volume = Math.max(audio.volume - step, 0);
-    } else {
-      audio.pause();
-      clearInterval(fadeInterval);
-    }
-  },50);
-}
-
 function playSong(src, start, loop=false){
-  fadeOutAudio();
-  setTimeout(()=>{
-    audio.src = src;
-    audio.loop = loop;
-    audio.currentTime = start;
-    audio.play().catch(()=>{});
-    fadeInAudio(1);
-  },300); // small delay for smooth fade
+  audio.pause();
+  audio.src = src;
+  audio.loop = loop;
+  audio.currentTime = start;
+  audio.play().catch(()=>{});
 }
 
 function addCat(limit=1){
@@ -152,7 +116,7 @@ noBtn.onclick = ()=>{
 
   addCat(2);
 
-  if(noCount>=10) noCount=0; // restart, last song continues
+  if(noCount>=10) noCount=0; // page restart, last song continues
 };
 
 // YES BUTTON
@@ -160,7 +124,7 @@ yesBtn.onclick = ()=>{
   playSong("yesSong.mp3",40);
   msg.textContent = "I can’t stop thinking about you 💙\nI would never cheat.\nI’ll only have eyes on you.";
   catsDiv.innerHTML="";
-  addCat(3);
+  addCat(2);
   alert("Send this to me: OK YES IDIOT");
 };
 </script>
